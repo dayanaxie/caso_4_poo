@@ -1,13 +1,13 @@
 package Main;
 
-import Arena.ArenaFrame;
+import Arena.ArenaDayana;
 import UI.ArenaFrameController;
 
 public class proba {
 	public static void main(String[] args) {
 		ArenaFrameController controller = new ArenaFrameController();
 		
-		ArenaFrame ui = new ArenaFrame("Arena de Dayana", controller);
+		ArenaDayana ui = new ArenaDayana("Arena de Dayana", controller);
 		
 		
 	}

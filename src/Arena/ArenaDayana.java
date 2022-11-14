@@ -7,6 +7,8 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -14,16 +16,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Dimension;
-
+import java.awt.Image;
 
 import UI.ArenaFrameController;
 
 
 
-// se puede usar el patron de observer y observable para usar notificar al robot cada vez que haga daño con las trampas
+// se puede usar el patron de observer y observable para notificar al robot cada vez que haga daño con las trampas
 // que le baje la vida
+// solo que tenemos que tener en cuenta cual robot es el que esta encima de la trampa para afectar al robot correcto
 
-public class ArenaDayana extends JFrame implements KeyListener, robotwar.common.IConstants{
+public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	private static final long serialVersionUID = 1L;
 	private ArenaFrameController controller;
 	private boolean runningSimulation;
@@ -34,112 +37,103 @@ public class ArenaDayana extends JFrame implements KeyListener, robotwar.common.
 	private boolean dirArriba = false;
 	private boolean dirAbajo = false;
 	
+	// el super es frame
 	
 	public ArenaDayana(String pTitle, ArenaFrameController pController){
-		super(pTitle);
 		controller = pController; // frame ve al controller
 		controller.setWindow(this); // controller ve al frame
 		runningSimulation = true;
 		// configuracion del panel
 		JPanel arenaPanel = new	JPanel();
 		arenaPanel.setSize(ARENA_WIDTH, ARENA_HEIGTH);
+		arenaPanel.setLayout(null);
+		arenaPanel.setBackground(Color.white);
+		// configuracion del frame
+		JFrame arenaFrame = new JFrame(pTitle);
+		arenaFrame.addKeyListener(this);
+		arenaFrame.getContentPane();
+		arenaFrame.add(arenaPanel);
+		arenaFrame.setSize(ARENA_WIDTH, ARENA_HEIGTH);
+		arenaFrame.setLocationRelativeTo(null);
+		arenaFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		arenaFrame.setVisible(true);
+		startArena(arenaPanel);
+	}
+	
+	public void startArena(JPanel pArenaPanel) {
 		BufferedImage robotImage = null;
 	    BufferedImage damageImage = null;
 		try {
+			
 			robotImage = ImageIO.read(new File(rutaImagenes + "robotDayana.png"));
 			damageImage = ImageIO.read(new File(rutaImagenes + "dañoPorTrampa.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		JLabel robotLabel = new JLabel(new ImageIcon(robotImage));
-		JLabel damageLabel = new JLabel(new ImageIcon(damageImage));
-		// agregamos el panel al frame
+		Image robotResized = robotImage.getScaledInstance(900, 600, Image.SCALE_DEFAULT);
+		JLabel robotLabel = new JLabel(new ImageIcon(robotResized));
+		Image damageResized = damageImage.getScaledInstance(900, 600, Image.SCALE_DEFAULT);
+		JLabel damageLabel = new JLabel(new ImageIcon(damageResized));
 		
-		
-		// configuracion del frame
-		
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(false);
-		this.setBounds(0, 0, ARENA_WIDTH, ARENA_HEIGTH);
-		this.setLocationRelativeTo(null);
-		this.setLayout(null); // this allows this frame to locate the components with freedom in the screen
-		this.setBackground(Color.white);
-		this.add(arenaPanel);
-		this.setVisible(true);
-		
-		showTraps(arenaPanel);
+		showTraps(pArenaPanel);
+		putBackground(pArenaPanel);
 		int counter = 0;
-		int x = 550;
-		int y = 200;
+		int x = 0;
+		int y = 0;
 		while (runningSimulation) {
-			arenaPanel.remove(robotLabel);
-			arenaPanel.remove(damageLabel);
+			//System.out.println("contador: " + counter);
+			List<Integer> coordinates = new ArrayList<Integer>();  
+			pArenaPanel.remove(robotLabel);
+			pArenaPanel.remove(damageLabel);
 			++ counter;
-			if(dirIzq == true) {
-				if(x<=-100) {
-					x = x;
-					y = y;
-				}
-				else {
-					showDamage(arenaPanel, y, y, damageLabel);
-					controller.calculateDamageLocation();
-					
-				}
-				
-				
-				
-				
-				else if((x>=950)&&(x<=1100)&&(y<=10)&&(y>-100)) {
-					//x = x;
-					//y = y;
-					mostrarDano(panel1, x, y, picLabel2);
-					x -= 20;//25;//50;//75;
-				}
-				else if((y>=550)&&(x>=300)&&(x<=900)) {
-					//x = x;
-					//y = y;
-					mostrarDano(panel1, x, y, picLabel2);
-					x -= 20;//25;//50;//75;
-				}
-				else if((y>=10)&&(y<=500)&&(x<=10)) {
-					//x = x;
-					//y = y;
-					mostrarDano(panel1, x, y, picLabel2);
-					x -= 20;//25;//50;//75;
-				}
-				else {
-					x -= 20;//25;//50;//75;
-				}
+			coordinates = controller.calculateDamageLocation(this, pArenaPanel, damageLabel, counter, x, y);
+			x = coordinates.get(0);
+			y = coordinates.get(1);
+			try {
+				// tiempo de refrescado
+				showImage(pArenaPanel, x, y, robotLabel);
+				Thread.sleep(50);
 			}
+			catch(Exception ex){
+				ex.printStackTrace();
+				
+			}
+			pArenaPanel.revalidate();
+			pArenaPanel.repaint();
 			
 		}
-	}
-	
-	
-	public void showDamage(JPanel panel, int x, int y, JLabel picLabel) {
 		
 	}
 	
+		
 	
+	public void showImage(JPanel pArenaPanel, int x, int y, JLabel pImageLabel) {
+		pArenaPanel.add(pImageLabel, 0);
+		Dimension imageSize = pImageLabel.getPreferredSize();
+		pImageLabel.setBounds(x, y, imageSize.width, imageSize.height);
+		
+		
+	}
 	
-	
-	
-	
+
 	void showTraps(JPanel panel) {
 		try {
 			BufferedImage pinchosImage = null;
 			pinchosImage = ImageIO.read(new File(rutaImagenes + "pinchos.png"));
-			JLabel pinchosLabel = new JLabel(new ImageIcon(pinchosImage));
+			Image pinchosResized = pinchosImage.getScaledInstance(800, 600, Image.SCALE_DEFAULT);
+			JLabel pinchosLabel = new JLabel(new ImageIcon(pinchosResized));
 			panel.add(pinchosLabel);
 			Dimension pinchoSize = pinchosLabel.getPreferredSize();
-			pinchosLabel.setBounds(1000, 0, pinchoSize.width, pinchoSize.height);
+			pinchosLabel.setBounds(250, -135, pinchoSize.width, pinchoSize.height);
+			//250, -135
 	        
 	        BufferedImage fuegoImage = null;
 	        fuegoImage = ImageIO.read(new File(rutaImagenes + "fuego.png"));
-			JLabel fuegoLabel = new JLabel(new ImageIcon(fuegoImage));
+	        Image fuegoResized = fuegoImage.getScaledInstance(800, 600, Image.SCALE_DEFAULT);
+			JLabel fuegoLabel = new JLabel(new ImageIcon(fuegoResized));
 			panel.add(fuegoLabel);
 			Dimension fuegoSize = fuegoLabel.getPreferredSize();
-			fuegoLabel.setBounds(350, 565, fuegoSize.width, fuegoSize.height);
+			fuegoLabel.setBounds(570, 375, fuegoSize.width, fuegoSize.height);
 
 		} catch (IOException e) {
 			System.out.println("Error cargando imagen ");
@@ -147,6 +141,23 @@ public class ArenaDayana extends JFrame implements KeyListener, robotwar.common.
 		}
 		
 	}
+	void putBackground(JPanel pArenaPanel) {
+		
+		try {
+			BufferedImage myPicture = null;
+			myPicture = ImageIO.read(new File(rutaImagenes + "pisoCemento.jpg"));
+			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+			//picLabel.setLocation(100, 500);
+			pArenaPanel.add(picLabel);
+			Dimension size = picLabel.getPreferredSize();
+	        picLabel.setBounds(-25, -50, size.width, size.height);
+	        //panel.setComponentZOrder(picLabel, 3);
+		} catch (IOException e) {
+			System.out.println("Error cargando imagen ");
+			e.printStackTrace();
+		}
+        
+    }
 
 
 
