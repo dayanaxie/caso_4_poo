@@ -9,13 +9,8 @@ import javax.swing.JPanel;
 import Arena.ArenaDayana;
 
 public class ArenaFrameController {
-	private ArenaDayana controlledFrame;
-	//private ArenaDayana controlledFrame;
-	
-	public ArenaFrameController() {
-		
-	}
-	
+	private ArenaDayana controlledFrame;	
+
 	public void setWindow(ArenaDayana pFrame) {
 		controlledFrame = pFrame;
 	}
