@@ -30,7 +30,7 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	private static final long serialVersionUID = 1L;
 	private ArenaFrameController controller;
 	private boolean runningSimulation;
-	private static String rutaImagenes = "../caso_4_poo/src/Images/";
+	private String rutaImagenes = "../caso_4_poo/src/Images/";
 	private int dir = 0;
 	private boolean dirIzq = false;
 	private boolean dirDer = false;

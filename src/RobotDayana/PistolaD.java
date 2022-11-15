@@ -3,10 +3,9 @@ package RobotDayana;
 import robotwar.common.robotbase.ORIENTATION;
 import robotwar.common.robotbase.Weapon;
 
-public class LanzaCohetesD extends Weapon{
+public class PistolaD extends Weapon{
 	
- 
-	public LanzaCohetesD() {
+	public PistolaD() {
 		super(25, 9, 300);
 	}
 		
@@ -18,7 +17,5 @@ public class LanzaCohetesD extends Weapon{
 		
 		
 	}
-	
-	
 
 }
