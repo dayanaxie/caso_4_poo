@@ -29,16 +29,22 @@ public class RobotWarController extends Thread implements ActionListener, KeyLis
 	private double yVelocity = 0;
 	private int x;
 	private int y;
-	
-	
+	private boolean bool;
+	Thread hilo;
 	
 	public RobotWarController(Robot robot){
 		this.robot = robot;
 		
 		timer = new Timer(5, this);
 	    this.timer.start();
+	    bool = true;
+	    
+	    hilo = new Thread();
+	    
+	    hilo.start();
 	}
-
+	
+	
 	public void gameFrame(RobotWarFrame frame) {
 		controlledFrame = frame;
 		controlledFrame.addKeyListener(this);
@@ -56,22 +62,28 @@ public class RobotWarController extends Thread implements ActionListener, KeyLis
 	}
 
 	public void up(){
-		//if (controlledFrame.getX() >= 250)
+		if (controlledFrame.getY() >=-120){
 	       controlledFrame.MoveRobotY(-50);
 	       controlledFrame.MoveRobotX(0);
 	       controlledFrame.repaint();
+		}
+		
 	    }
 
 	 public void down() {
+		 if (controlledFrame.getY() <=250){
 		 controlledFrame.MoveRobotY(50); 
 	     controlledFrame.MoveRobotX(0);
 	     controlledFrame.repaint();
+		 }
 	    }
 
 	 public void left(){
+		 if (controlledFrame.getX() >=-200){
 		 controlledFrame.MoveRobotY(0); 
 	     controlledFrame.MoveRobotX(-50);
 	     controlledFrame.repaint();
+		 }
 	    }
 
 	 public void right(){
@@ -81,6 +93,11 @@ public class RobotWarController extends Thread implements ActionListener, KeyLis
 	    }
 	
 	
+	 public void enter() {
+		 controlledFrame.habilitarChat(bool);
+		 bool = !bool;
+		 controlledFrame.repaint();
+	 }
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
@@ -106,9 +123,9 @@ public class RobotWarController extends Thread implements ActionListener, KeyLis
 	    
 	    if(code == KeyEvent.VK_ESCAPE) {
 	    	System.exit(code);
-	    }
-		
+	    }  
 	}
+	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		 int code = e.getKeyCode();
@@ -124,6 +141,10 @@ public class RobotWarController extends Thread implements ActionListener, KeyLis
 	       if (code == KeyEvent.VK_RIGHT)
 	           right();
 		
+	       if(code == KeyEvent.VK_ENTER) {
+		       enter();
+		    }
+	       
 	}
 
 	@Override
