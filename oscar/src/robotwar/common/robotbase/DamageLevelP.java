@@ -2,11 +2,12 @@ package robotwar.common.robotbase;
 
 import robotwar.utils.Observer;
 
+/*
+ Esta clase contiene el observer, esta puesto aquí no solo para las armas, 
+ sino que tambien para las partes de los robots
+ */
 public class DamageLevelP extends DamageLevel implements Observer{
 	
-	public DamageLevelP() {
-		
-	}
 	
 	@Override
 	public void update() {
