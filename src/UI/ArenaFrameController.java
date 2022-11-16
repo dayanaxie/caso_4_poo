@@ -20,7 +20,7 @@ public class ArenaFrameController implements Observable{
 	}
 	
 	
-	public List<Integer> calculateDamageLocation(ArenaDayana pArena, JPanel pArenaPanel, JLabel pDamageLabel, int s, int x, int y) {
+	public List<Integer> calculateDamageLocation(ArenaDayana pArena, JPanel pArenaPanel, JLabel pDamageLabel, int x, int y) {
 		List<Integer> coordinates = new ArrayList<Integer>();  
 		if(pArena.isDirIzq()) {
 			if(x<=-100) {

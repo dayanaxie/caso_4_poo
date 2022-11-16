@@ -41,6 +41,8 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	private boolean dirDer = false;
 	private boolean dirArriba = false;
 	private boolean dirAbajo = false;
+	private boolean shootWeaponOne = false;
+	private boolean shootWeaponTwo = false;
 	private robotDayana robot;
 	
 	// el super es frame
@@ -71,9 +73,13 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	public void startArena(JPanel pArenaPanel) {
 		BufferedImage robotImage = null;
 	    BufferedImage damageImage = null;
+	    BufferedImage balasImage = null;
+	    BufferedImage cohetesImage = null;
 		try {
 			robotImage = ImageIO.read(new File(rutaImagenes + robot.getRoute() + ".png"));
 			damageImage = ImageIO.read(new File(rutaImagenes + "dañoPorTrampa.png"));
+			balasImage = ImageIO.read(new File(rutaImagenes + "balas.png"));
+			cohetesImage = ImageIO.read(new File(rutaImagenes + "cohetes.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,9 +87,12 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 		JLabel robotLabel = new JLabel(new ImageIcon(robotResized));
 		Image damageResized = damageImage.getScaledInstance(900, 600, Image.SCALE_DEFAULT);
 		JLabel damageLabel = new JLabel(new ImageIcon(damageResized));
+		Image balasResized = balasImage.getScaledInstance(500, 200, Image.SCALE_DEFAULT);
+		JLabel balasLabel = new JLabel(new ImageIcon(balasResized));
+		Image cohetesResized = cohetesImage.getScaledInstance(600, 250, Image.SCALE_DEFAULT);
+		JLabel cohetesLabel = new JLabel(new ImageIcon(cohetesResized));
 		showTraps(pArenaPanel);
 		putBackground(pArenaPanel);
-		int counter = 0;
 		int x = 0;
 		int y = 0;
 		System.out.println("Energia del robot: " + robot.getEnergy()); 
@@ -92,10 +101,34 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 			List<Integer> coordinates = new ArrayList<Integer>();  
 			pArenaPanel.remove(robotLabel);
 			pArenaPanel.remove(damageLabel);
-			++ counter;
-			coordinates = controller.calculateDamageLocation(this, pArenaPanel, damageLabel, counter, x, y);
+			
+			coordinates = controller.calculateDamageLocation(this, pArenaPanel, damageLabel, x, y);
 			x = coordinates.get(0);
 			y = coordinates.get(1);
+			if(shootWeaponOne) {
+				int bulletsX = x;
+				int bulletxY = y;
+				bulletsX += 550;
+				bulletxY += 75;
+				showImage(pArenaPanel, bulletsX, bulletxY, balasLabel);
+			}
+			
+			if (shootWeaponTwo == false ) {
+				pArenaPanel.remove(cohetesLabel);
+
+			}
+			
+			else if(shootWeaponTwo) {
+				int cohetesX = x;
+				int cohetesY = y;
+				cohetesX += 575;
+				cohetesY += 260;
+				showImage(pArenaPanel, cohetesX, cohetesY, cohetesLabel);
+			}
+			if (shootWeaponOne == false) {
+				pArenaPanel.remove(balasLabel);
+			}
+	
 			try {
 				// tiempo de refrescado
 				showImage(pArenaPanel, x, y, robotLabel);
@@ -181,7 +214,13 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
-	    if (key == KeyEvent.VK_LEFT) {
+		if (key == KeyEvent.VK_Z) {
+			shootWeaponOne = true;
+		}
+		else if(key == KeyEvent.VK_X) {
+			shootWeaponTwo = true;
+		}
+		else if (key == KeyEvent.VK_LEFT) {
 	        dirIzq = true;
 	    }
 
@@ -204,7 +243,13 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
-	    if (key == KeyEvent.VK_LEFT) {
+		if (key == KeyEvent.VK_Z) {
+			shootWeaponOne = false;
+		}
+		else if(key == KeyEvent.VK_X) {
+			shootWeaponTwo = false;
+		}
+		else if (key == KeyEvent.VK_LEFT) {
 	        dirIzq = false;
 	    }
 
@@ -281,6 +326,9 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	public void setDirAbajo(boolean dirAbajo) {
 		this.dirAbajo = dirAbajo;
 	}
+
+
+
 
 	
 

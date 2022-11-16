@@ -7,6 +7,7 @@ public class MartilloD extends Weapon{
 	
 	MartilloD(){
 		super(25, 9, 300);
+		this.setLevel(5);
 	}
 
 	@Override

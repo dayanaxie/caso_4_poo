@@ -7,6 +7,7 @@ public class HachaD extends Weapon{
 	
 	HachaD(){
 		super(25, 9, 300);
+		this.setLevel(6);
 	}
 
 	@Override

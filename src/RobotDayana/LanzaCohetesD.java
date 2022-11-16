@@ -8,6 +8,7 @@ public class LanzaCohetesD extends Weapon{
  
 	public LanzaCohetesD() {
 		super(25, 9, 300);
+		this.setLevel(9);
 	}
 		
 

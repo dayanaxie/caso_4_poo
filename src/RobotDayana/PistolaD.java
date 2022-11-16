@@ -7,6 +7,7 @@ public class PistolaD extends Weapon{
 	
 	public PistolaD() {
 		super(25, 9, 300);
+		this.setLevel(4);
 	}
 		
 
