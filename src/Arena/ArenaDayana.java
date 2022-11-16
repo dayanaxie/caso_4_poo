@@ -1,5 +1,7 @@
 package Arena;
 import robotwar.common.IConstants;
+import robotwar.common.robotbase.IRobot;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.KeyEvent;
@@ -15,6 +17,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import RobotDayana.robotDayana;
+
 import java.awt.Dimension;
 import java.awt.Image;
 
@@ -36,10 +41,12 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	private boolean dirDer = false;
 	private boolean dirArriba = false;
 	private boolean dirAbajo = false;
+	private robotDayana robot;
 	
 	// el super es frame
 	
-	public ArenaDayana(String pTitle, ArenaFrameController pController){
+	public ArenaDayana(String pTitle, ArenaFrameController pController, robotDayana pRobot){
+		robot = pRobot;
 		controller = pController; // frame ve al controller
 		controller.setWindow(this); // controller ve al frame
 		runningSimulation = true;
@@ -58,14 +65,14 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 		arenaFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		arenaFrame.setVisible(true);
 		startArena(arenaPanel);
+		
 	}
 	
 	public void startArena(JPanel pArenaPanel) {
 		BufferedImage robotImage = null;
 	    BufferedImage damageImage = null;
 		try {
-			
-			robotImage = ImageIO.read(new File(rutaImagenes + "robotDayana.png"));
+			robotImage = ImageIO.read(new File(rutaImagenes + robot.getRoute() + ".png"));
 			damageImage = ImageIO.read(new File(rutaImagenes + "dañoPorTrampa.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -74,14 +81,14 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 		JLabel robotLabel = new JLabel(new ImageIcon(robotResized));
 		Image damageResized = damageImage.getScaledInstance(900, 600, Image.SCALE_DEFAULT);
 		JLabel damageLabel = new JLabel(new ImageIcon(damageResized));
-		
 		showTraps(pArenaPanel);
 		putBackground(pArenaPanel);
 		int counter = 0;
 		int x = 0;
 		int y = 0;
+		System.out.println("Energia del robot: " + robot.getEnergy()); 
+		
 		while (runningSimulation) {
-			//System.out.println("contador: " + counter);
 			List<Integer> coordinates = new ArrayList<Integer>();  
 			pArenaPanel.remove(robotLabel);
 			pArenaPanel.remove(damageLabel);
@@ -158,6 +165,8 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 		}
         
     }
+	
+
 
 
 
@@ -272,6 +281,9 @@ public class ArenaDayana implements KeyListener, robotwar.common.IConstants{
 	public void setDirAbajo(boolean dirAbajo) {
 		this.dirAbajo = dirAbajo;
 	}
+
+	
+
 
 
 	

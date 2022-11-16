@@ -1,8 +1,15 @@
-package Main;
+package robotWarMain;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -10,22 +17,20 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import UI.MenuController;
+import Arena.ArenaDayana;
+import RobotDayana.robotDayana;
+import UI.ArenaFrameController;
 
-public class MenuFrame extends JFrame{
+public class menuFrame extends JFrame{
 	private static final long serialVersionUID = 1L;
-	private MenuController controller;
+	private menuController controller;
+	private List<String> selectedWeaponsAndStrikes = new ArrayList <String>();
 	private String [] weaponOptions ={"Lanza cohetes", "Pistola"};
 	private String [] golpesOptions ={"Hacha", "Martillo"};
-	private String [] robotOptions = {"RobotHechoEnCanva"};
+	private String [] robotOptions = {"RobotHechoEnCanva", "Robot"};
 	
-	public MenuFrame(String pTitle, MenuController pController) {
+	public menuFrame(String pTitle, menuController pController) {
 		super(pTitle);
 		controller = pController; // frame ve al controller
 		controller.setWindow(this); // controller ve al frame
@@ -61,6 +66,7 @@ public class MenuFrame extends JFrame{
     	
     	JComboBox robotsAvailable = new JComboBox(robotOptions);
     	robotsAvailable.setBounds(250, 200, 150, 20);
+  
     	this.add(robotsAvailable);
     	
     	JLabel weaponOne = new JLabel("Seleccione el arma 1: ");
@@ -92,6 +98,15 @@ public class MenuFrame extends JFrame{
     	startButton.setBounds(200, 425, 150, 20);
     	startButton.addActionListener(new ActionListener(){  
     		public void actionPerformed(ActionEvent e){
+    			
+    			selectedWeaponsAndStrikes.add(weaponAvailable.getSelectedItem().toString());
+    			selectedWeaponsAndStrikes.add(weaponsAvailable.getSelectedItem().toString());
+    			selectedWeaponsAndStrikes.add(golpeAvailable.getSelectedItem().toString());
+    			if("RobotHechoEnCanva".equals(robotsAvailable.getSelectedItem().toString())) {
+    				robotDayana robotDayana = new robotDayana(selectedWeaponsAndStrikes);
+    				ArenaFrameController controller = new ArenaFrameController();
+    				ArenaDayana ui = new ArenaDayana("Arena de Dayana", controller, robotDayana);
+    			}
     			//aqui se pone la coneccion con los sokects para empezar la partida y crear los robots
     		}  
     	});
@@ -103,3 +118,4 @@ public class MenuFrame extends JFrame{
 	
 
 }
+

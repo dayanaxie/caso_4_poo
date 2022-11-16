@@ -7,9 +7,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import Arena.ArenaDayana;
+import patronObserver.Observable;
+import patronObserver.Observer;
 
-public class ArenaFrameController {
+public class ArenaFrameController implements Observable{
 	private ArenaDayana controlledFrame;	
+	public ArrayList<Observer> observers = new ArrayList<Observer>();
+
 
 	public void setWindow(ArenaDayana pFrame) {
 		controlledFrame = pFrame;
@@ -24,11 +28,13 @@ public class ArenaFrameController {
 				y = y;
 			}
 			else if((x>=200)&&(x<=350)&&(y<=-125)&&(y>-235)) {
+				this.notifyObservers(-5);
 				pArena.showImage(pArenaPanel, x, y, pDamageLabel);
 				x -= 20;
 			}
 			else if((x>=520)&&(x<=670)&&(y<=385)&&(y>275)) {
 				pArena.showImage(pArenaPanel, x, y, pDamageLabel);
+				this.notifyObservers(-5);
 				x -= 20;
 			}
 			else {
@@ -42,10 +48,12 @@ public class ArenaFrameController {
 			}
 			else if((x>=200)&&(x<=350)&&(y<=-125)&&(y>-235)) {
 				pArena.showImage(pArenaPanel, x, y, pDamageLabel);
+				this.notifyObservers(-5);
 				x += 20;
 			}
 			else if((x>=520)&&(x<=670)&&(y<=385)&&(y>275))  {
 				pArena.showImage(pArenaPanel, x, y, pDamageLabel);
+				this.notifyObservers(-5);
 				x += 20;
 			}
 			else {
@@ -59,10 +67,12 @@ public class ArenaFrameController {
 			}
 			else if((x>=200)&&(x<=350)&&(y<=-125)&&(y>-235)) {
 				pArena.showImage(pArenaPanel, x, y, pDamageLabel);
+				this.notifyObservers(-5);
 				y -= 20;//25;//50;//75;
 			}
 			else if((x>=520)&&(x<=670)&&(y<=385)&&(y>275)) {
 				pArena.showImage(pArenaPanel, x, y, pDamageLabel);
+				this.notifyObservers(-5);
 				y -= 20;//25;//50;//75;
 			}
 			else {
@@ -76,10 +86,12 @@ public class ArenaFrameController {
 			}
 			else if((x>=200)&&(x<=350)&&(y<=-125)&&(y>-235))  {
 				pArena.showImage(pArenaPanel, x, y, pDamageLabel);
+				this.notifyObservers(-5);
 				y += 20;//25;//50;//75;
 			}
 			else if((x>=520)&&(x<=670)&&(y<=385)&&(y>275)) {
 				pArena.showImage(pArenaPanel, x, y, pDamageLabel);
+				this.notifyObservers(-5);
 				y += 20;//25;//50;//75;
 			}
 
@@ -92,6 +104,27 @@ public class ArenaFrameController {
 		coordinates.add(y);
 		
 		return coordinates;
+	}
+
+
+	@Override
+	public void addObserver(Observer pObservable) {
+		observers.add(pObservable);
+		
+	}
+
+	@Override
+	public void removeObserver(Observer pObservable) {
+		observers.remove(pObservable);
+		
+	}
+
+	@Override
+	public void notifyObservers(int pValue) {
+		for(Observer observer : observers) {
+			observer.updateEnergy(pValue);
+		}
+		
 	}
 		
 
